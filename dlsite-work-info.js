@@ -142,6 +142,8 @@
                 if (anyOf_inArray(['イラスト(CG)+ノベル', 'イラスト集(CG集)'], info.work.workForms) != -1) {
                     form = 'CG集';
                 }
+            } else if (anyOf_inArray(['オーディオ(MP3)', 'オーディオ(WAV)'], info.work.fileForms) && $.inArray('音声作品', info.work.workForms) != -1) {
+                form = '音声';
             } else if ($.inArray('その他', info.work.workForms) != -1) {
                 form = info.work.workForms[1];
             }
