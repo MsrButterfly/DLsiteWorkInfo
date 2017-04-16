@@ -12,7 +12,7 @@
 
   "content_scripts": [
     {
-      "matches": ["http://www.dlsite.com/*/work/*"],
+      "matches": ["http://www.dlsite.com/*/work/*", "http://www.dlsite.com/*/announce/*"],
       "js": ["includes/jquery-3.2.1.min.js", "dlsite-work-info.js"],
       "run_at": "document_end"
     }
