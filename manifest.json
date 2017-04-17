@@ -1,19 +1,22 @@
 ﻿{
   "manifest_version": 2,
-
   "name": "DLsite Work Info",
   "description": "Get data strings from DLsite work pages.",
   "version": "1.0",
-
   "permissions": [
     "clipboardWrite",
     "http://www.dlsite.com/*"
   ],
-
   "content_scripts": [
     {
-      "matches": ["http://www.dlsite.com/*/work/*", "http://www.dlsite.com/*/announce/*"],
-      "js": ["includes/jquery-3.2.1.min.js", "dlsite-work-info.js"],
+      "matches": [
+        "http://www.dlsite.com/*/work/*",
+        "http://www.dlsite.com/*/announce/*"
+      ],
+      "js": [
+        "includes/jquery-3.2.1.min.js",
+        "dlsite-work-info.js"
+      ],
       "run_at": "document_end"
     }
   ]
