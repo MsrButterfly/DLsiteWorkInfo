@@ -13,8 +13,13 @@
         "http://www.dlsite.com/*/work/*",
         "http://www.dlsite.com/*/announce/*"
       ],
+      "css": [
+        "includes/layer/skin/default/layer.css",
+        "dlsite-work-info.css"
+      ],
       "js": [
-        "includes/jquery-3.2.1.min.js",
+        "includes/jquery/jquery-3.2.1.min.js",
+        "includes/layer/layer.js",
         "dlsite-work-info.js"
       ],
       "run_at": "document_end"

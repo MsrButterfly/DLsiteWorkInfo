@@ -1,9 +1,14 @@
 ﻿var DLsiteWorkInfo = function () {
-  var GetDLsiteStringButton = $("<input type='button' value='Get DLsite String' style='margin-left:10px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis'>")
-  var GetInfoTableButton = $("<input type='button' value='Get InfoTable' style='margin-left:10px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis'>")
-  var GetBeautifiedInfoTableButton = $("<input type='button' value='Get Beautified InfoTable' style='margin-left:10px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis'>")
-
-  var SearchField = $("<input type='search' placeholder='Jump to work... (ID)' style='margin-left:10px;width:150px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis'>")
+  var ToolBarA = $('<div id="dwi-toolbar-a" style="display:inline"></div>')
+  var ToolBarB = $('<div id="dwi-toolbar-b" style="display:inline"></div>')
+  var ButtonGroupA = $('<div style="display:inline"></div>')
+  var ButtonGroupB = $('<div style="display:inline"></div>')
+  var SearchInNyaaButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item dwi-btn-a">搜索sukebei.nyaa.se</button>')
+  var SearchInGgbasesButton = $('<button class="dwi-btn dwi-btn-gray dwi-btn-c">搜索ggbases.com</button>')
+  var CopyDLsiteStringButton = $('<button class="dwi-btn dwi-btn-brown dwi-next-item">用于整理的字符串</button>')
+  var CopyInfoTableButton = $('<button class="dwi-btn dwi-btn-green dwi-next-item">压缩的作品信息</button>')
+  var CopyBeautifiedInfoTableButton = $('<button class="dwi-btn dwi-btn-purple dwi-next-item">格式化的作品信息</button>')
+  var SearchField = $('<input id="dwi-search-field" type="search" placeholder="输入包含ID的字符串跳转到作品" class="dwi-next-item">')
 
   var GetCategory = function () {
     var exp = new RegExp('http://www\.dlsite\.com/([a-zA-Z]*)/(work|announce)/=.*')
@@ -20,7 +25,7 @@
         var title = elem.children('th')
         var value = elem.children('td')
         if ($.inArray(title.text(), ['サークル名', 'ブランド名']) != -1) {
-          var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome)/circle/profile/=/maker_id/(.*)$')
+          var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng)/circle/profile/=/maker_id/(.*)$')
           var url = value.children('span.maker_name').children('a').attr('href')
           if (url == null) {
             url = $('#topicpath > a:nth-child(2) > span').text()
@@ -36,13 +41,13 @@
   }
 
   var GetWorkId = function () {
-    var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome)/(work|announce)/=/product_id/(.*)$')
+    var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng)/(work|announce)/=/product_id/(.*)$')
     var r = window.location.href.match(exp)
     return unescape(r[3]).replace('/', '').replace('.html', '')
   }
 
   var WorkIsPublished = function () {
-    var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome)/(work|announce)/.*')
+    var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng)/(work|announce)/.*')
     var r = window.location.href.match(exp)
     return unescape(r[2]) == 'work'
   }
@@ -145,7 +150,7 @@
     return result
   }
 
-  GetDLsiteStringButton.click(
+  CopyDLsiteStringButton.click(
     function () {
       var anyOf_inArray = function (arrayA, arrayB) {
         var result = false
@@ -165,7 +170,7 @@
         form = $.inArray('動画作品', info.work.workForms) != -1 ? 'アニメゲーム' : 'ゲーム'
       } else if (anyOf_inArray(['アドベンチャーゲーム'], info.work.workForms)) {
         form = 'ゲーム'
-      } else if (anyOf_inArray(['画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)'], info.work.fileForms)) {
+      } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)'], info.work.fileForms)) {
         if (anyOf_inArray(['イラスト(CG)+ノベル', 'イラスト集(CG集)'], info.work.workForms) != -1) {
           form = 'CG集'
         }
@@ -188,11 +193,11 @@
       elem.select()
       document.execCommand('copy')
       elem.remove()
-      alert('Following texts have been copied to your clipboard:\n\n' + result)
+      layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
     }
   )
 
-  GetInfoTableButton.click(
+  CopyInfoTableButton.click(
     function () {
       var info = GetWorkInfo()
       var result = JSON.stringify(info)
@@ -203,11 +208,11 @@
       elem.select()
       document.execCommand('copy')
       elem.remove()
-      alert('Following texts have been copied to your clipboard:\n\n' + result)
+      layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
     }
   )
 
-  GetBeautifiedInfoTableButton.click(
+  CopyBeautifiedInfoTableButton.click(
     function () {
       var info = GetWorkInfo()
       var result = JSON.stringify(info, null, 2)
@@ -218,7 +223,7 @@
       elem.select()
       document.execCommand('copy')
       elem.remove()
-      alert('Following texts have been copied to your clipboard:\n\n' + result)
+      layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
     }
   )
 
@@ -238,17 +243,57 @@
         if (r != null) {
           url = 'http://www.dlsite.com/pro/work/=/product_id/' + unescape(r[0]) + '.html'
         }
+        exp = new RegExp('RE[0-9]{6}')
+        r = text.match(exp)
+        if (r != null) {
+          url = 'http://www.dlsite.com/ecchi-eng/work/=/product_id/' + unescape(r[0]) + '.html'
+        }
         if (url != null) {
           window.location.href = url
+        } else {
+          layer.tips('未发现作品ID', $(this), {time: 1000})
         }
       }
     }
   )
 
-  $('#topicpath').append(GetDLsiteStringButton)
-  $('#topicpath').append(GetInfoTableButton)
-  $('#topicpath').append(GetBeautifiedInfoTableButton)
-  $('#topicpath').append(SearchField)
+  SearchInNyaaButton.click(
+    function () {
+      var info = GetWorkInfo()
+      var url = 'https://sukebei.nyaa.se/?page=search&cats=7_0&filter=0&term=' + encodeURI(info.work.name)
+      window.open(url)
+    }
+  )
+
+  SearchInGgbasesButton.click(
+    function () {
+      var info = GetWorkInfo()
+      var url = 'https://ggbases.com/search.so?p=0&title=' + encodeURI(info.work.name)
+      window.open(url)
+    }
+  )
+
+  layer.config({
+    anim: 5,
+    time: 0.5,
+    tips: [3, 'rgba(0,0,0)'],
+    path: 'include/layer'
+  })
+
+  $('#top_wrapper').css('margin-top', '0')
+  $('#topicpath').css('display', 'inline')
+  $('#topicpath').after(ToolBarA)
+  $('#top_wrapper > div.base_title_br.clearfix').css('margin-top', '5px')
+  $('#work_name > a').css('display', 'inline')
+  $('#work_name > a').after(ToolBarB)
+  ToolBarA.append(ButtonGroupA)
+  ToolBarB.append(ButtonGroupB)
+  ButtonGroupA.append(SearchInNyaaButton)
+  ButtonGroupA.append(SearchInGgbasesButton)
+  ButtonGroupA.append(SearchField)
+  ButtonGroupB.append(CopyDLsiteStringButton)
+  ButtonGroupB.append(CopyInfoTableButton)
+  ButtonGroupB.append(CopyBeautifiedInfoTableButton)
 }
 
 DLsiteWorkInfo()

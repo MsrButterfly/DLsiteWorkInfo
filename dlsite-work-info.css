@@ -1,0 +1,92 @@
+#dwi-toolbar-a {
+  vertical-align: 0%;
+}
+
+#dwi-toolbar-b {
+  vertical-align: 8%;
+}
+
+.dwi-btn {
+  cursor: default;
+  display: inline-block;
+  outline: none;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.01);
+  background: white;
+  border-radius: 3px;
+  font-size: 10px;
+}
+
+.dwi-btn-a {
+  border: 1px solid;
+  border-radius: 3px 0 0 3px;
+}
+
+.dwi-btn-c {
+  border: 1px solid;
+  border-radius: 0 3px 3px 0;
+}
+
+.dwi-next-item {
+  margin-left: 10px;
+}
+
+.dwi-btn-gray {
+  border-color: #b8c4d9;
+  color: #8591a6;
+  background: #f2f3f7;
+}
+
+.dwi-btn-gray:hover {
+  background: #b8c4d9;
+  color: #fff;
+}
+
+.dwi-btn-brown {
+  border-color: #ccb8a3;
+  color: #b38659;
+  background: #faecdf;
+}
+
+.dwi-btn-brown:hover {
+  background: #ccb8a3;
+  color: #fff;
+}
+
+.dwi-btn-purple {
+  border-color: #c3add9;
+  color: #987db3;
+  background: #f2e5ff;
+}
+
+.dwi-btn-purple:hover {
+  background: #c3add9;
+  color: #fff;
+}
+
+.dwi-btn-green {
+  border-color: #a3cc7a;
+  color: #80a65b;
+  background: #e6f8d4;
+}
+
+.dwi-btn-green:hover {
+  background: #a3cc7a;
+  color: #fff;
+}
+
+#dwi-search-field {
+  vertical-align: baseline;
+  border: 1px solid #dadada;
+  color: #555;
+  width: 200px;
+  padding: 1px 0 1px 0;
+  box-shadow: inset 0px 1px 4px #ececec;
+  -moz-box-shadow: inset 0px 1px 4px #ececec;
+  -webkit-box-shadow: inset 0px 1px 4px #ececec;
+  border-radius: 3px;
+}
