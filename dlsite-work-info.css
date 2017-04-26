@@ -79,6 +79,17 @@
   color: #fff;
 }
 
+.dwi-btn-yellow {
+  border-color: #cb6;
+  color: #a69542;
+  background: #fff7d2;
+}
+
+.dwi-btn-yellow:hover {
+  background: #a69542;
+  color: #fff;
+}
+
 #dwi-search-field {
   vertical-align: baseline;
   border: 1px solid #dadada;

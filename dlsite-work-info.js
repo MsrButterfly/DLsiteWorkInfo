@@ -3,12 +3,24 @@
   var ToolBarB = $('<div id="dwi-toolbar-b" style="display:inline"></div>')
   var ButtonGroupA = $('<div style="display:inline"></div>')
   var ButtonGroupB = $('<div style="display:inline"></div>')
-  var SearchInNyaaButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item dwi-btn-a">搜索sukebei.nyaa.se</button>')
-  var SearchInGgbasesButton = $('<button class="dwi-btn dwi-btn-gray dwi-btn-c">搜索ggbases.com</button>')
+  var SearchByNyaaButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Nyaa搜索</button>')
+  var SearchByGgbasesButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">GGBases搜索</button>')
+  var CopyWorkTitleButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品标题</button>')
+  var CopyWorkIdButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品编号</button>')
   var CopyDLsiteStringButton = $('<button class="dwi-btn dwi-btn-brown dwi-next-item">用于整理的字符串</button>')
   var CopyInfoTableButton = $('<button class="dwi-btn dwi-btn-green dwi-next-item">压缩的作品信息</button>')
   var CopyBeautifiedInfoTableButton = $('<button class="dwi-btn dwi-btn-purple dwi-next-item">格式化的作品信息</button>')
   var SearchField = $('<input id="dwi-search-field" type="search" placeholder="输入包含ID的字符串跳转到作品" class="dwi-next-item">')
+
+  var SetTextToClipboard = function (text) {
+    // window.copy(result)
+    var elem = $('<textarea/>')
+    elem.text(text)
+    $('body').append(elem)
+    elem.select()
+    document.execCommand('copy')
+    elem.remove()
+  }
 
   var GetCategory = function () {
     var exp = new RegExp('http://www\.dlsite\.com/([a-zA-Z]*)/(work|announce)/=.*')
@@ -32,7 +44,7 @@
           }
           var r = url.match(exp)
           if (r != null) {
-            result = unescape(r[2]).replace('/', '').replace('.html', '')
+            result = unescape(r[2]).split('#')[0].replace('/', '').replace('.html', '')
           }
         }
       }
@@ -42,8 +54,12 @@
 
   var GetWorkId = function () {
     var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng)/(work|announce)/=/product_id/(.*)$')
-    var r = window.location.href.match(exp)
-    return unescape(r[3]).replace('/', '').replace('.html', '')
+    var url = $('#work_name > a').attr('href')
+    if (url == null) {
+      var url = window.location.href
+    }
+    var r = url.match(exp)
+    return unescape(r[3]).split('#')[0].replace('/', '').replace('.html', '')
   }
 
   var WorkIsPublished = function () {
@@ -150,6 +166,22 @@
     return result
   }
 
+  CopyWorkIdButton.click(
+    function () {
+      var info = GetWorkInfo()
+      SetTextToClipboard(info.work.id)
+      layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
+    }
+  )
+
+  CopyWorkTitleButton.click(
+    function () {
+      var info = GetWorkInfo()
+      SetTextToClipboard(info.work.name)
+      layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
+    }
+  )
+
   CopyDLsiteStringButton.click(
     function () {
       var anyOf_inArray = function (arrayA, arrayB) {
@@ -170,13 +202,13 @@
         form = $.inArray('動画作品', info.work.workForms) != -1 ? 'アニメゲーム' : 'ゲーム'
       } else if (anyOf_inArray(['アドベンチャーゲーム'], info.work.workForms)) {
         form = 'ゲーム'
-      } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)'], info.work.fileForms)) {
+      } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'PDF'], info.work.fileForms)) {
         if (anyOf_inArray(['イラスト(CG)+ノベル', 'イラスト集(CG集)'], info.work.workForms) != -1) {
           form = 'CG集'
         }
       } else if (anyOf_inArray(['オーディオ(MP3)', 'オーディオ(WAV)'], info.work.fileForms) && $.inArray('音声作品', info.work.workForms) != -1) {
         form = '音声'
-      } else if (anyOf_inArray(['マンガ'], info.work.workForms)) {
+      } else if (anyOf_inArray(['マンガ', 'デジタルコミック'], info.work.workForms)) {
         form = 'コミック'
       } else if ($.inArray('その他', info.work.workForms) != -1) {
         form = info.work.workForms[1]
@@ -186,13 +218,7 @@
       + (info.category == 'maniax' ? '同人' : info.work.ageProvision) + form + ') ['
       + info.work[info.work.published ? 'saleDate' : 'lastUpdateDate'].substr(2).split('-').join('') + '] ['
       + info.work.id + '] [' + info.maker.name + '] ' + info.work.name
-      // window.copy(result)
-      var elem = $('<textarea/>')
-      elem.text(result)
-      $('body').append(elem)
-      elem.select()
-      document.execCommand('copy')
-      elem.remove()
+      SetTextToClipboard(result)
       layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
     }
   )
@@ -200,14 +226,7 @@
   CopyInfoTableButton.click(
     function () {
       var info = GetWorkInfo()
-      var result = JSON.stringify(info)
-      // window.copy(result)
-      var elem = $('<textarea/>')
-      elem.text(result)
-      $('body').append(elem)
-      elem.select()
-      document.execCommand('copy')
-      elem.remove()
+      SetTextToClipboard(JSON.stringify(info))
       layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
     }
   )
@@ -216,13 +235,7 @@
     function () {
       var info = GetWorkInfo()
       var result = JSON.stringify(info, null, 2)
-      // window.copy(result)
-      var elem = $('<textarea/>')
-      elem.text(result)
-      $('body').append(elem)
-      elem.select()
-      document.execCommand('copy')
-      elem.remove()
+      SetTextToClipboard(JSON.stringify(info, null, 2))
       layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
     }
   )
@@ -257,15 +270,15 @@
     }
   )
 
-  SearchInNyaaButton.click(
+  SearchByNyaaButton.click(
     function () {
       var info = GetWorkInfo()
-      var url = 'https://sukebei.nyaa.se/?page=search&cats=7_0&filter=0&term=' + encodeURI(info.work.name)
+      var url = 'https://sukebei.nyaa.se/?page=search&cats=7_0&filter=0&term=' + encodeURI(info.work.id + '|' + info.work.name)
       window.open(url)
     }
   )
 
-  SearchInGgbasesButton.click(
+  SearchByGgbasesButton.click(
     function () {
       var info = GetWorkInfo()
       var url = 'https://ggbases.com/search.so?p=0&title=' + encodeURI(info.work.name)
@@ -288,9 +301,11 @@
   $('#work_name > a').after(ToolBarB)
   ToolBarA.append(ButtonGroupA)
   ToolBarB.append(ButtonGroupB)
-  ButtonGroupA.append(SearchInNyaaButton)
-  ButtonGroupA.append(SearchInGgbasesButton)
+  ButtonGroupA.append(SearchByNyaaButton)
+  ButtonGroupA.append(SearchByGgbasesButton)
   ButtonGroupA.append(SearchField)
+  ButtonGroupB.append(CopyWorkIdButton)
+  ButtonGroupB.append(CopyWorkTitleButton)
   ButtonGroupB.append(CopyDLsiteStringButton)
   ButtonGroupB.append(CopyInfoTableButton)
   ButtonGroupB.append(CopyBeautifiedInfoTableButton)
