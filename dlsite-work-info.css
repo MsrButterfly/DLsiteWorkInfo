@@ -92,12 +92,9 @@
 
 #dwi-search-field {
   vertical-align: baseline;
+  float: right;
   border: 1px solid #dadada;
   color: #555;
-  width: 200px;
-  padding: 1px 0 1px 0;
-  box-shadow: inset 0px 1px 4px #ececec;
-  -moz-box-shadow: inset 0px 1px 4px #ececec;
-  -webkit-box-shadow: inset 0px 1px 4px #ececec;
+  width: 250px;
   border-radius: 3px;
 }

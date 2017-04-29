@@ -3,8 +3,9 @@
   var ToolBarB = $('<div id="dwi-toolbar-b" style="display:inline"></div>')
   var ButtonGroupA = $('<div style="display:inline"></div>')
   var ButtonGroupB = $('<div style="display:inline"></div>')
-  var SearchByNyaaButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Nyaa搜索</button>')
-  var SearchByGgbasesButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">GGBases搜索</button>')
+  var SearchByNyaaButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Nyaa</button>')
+  var SearchByGgbasesButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">GGBases</button>')
+  var SearchBySagaozButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">SAGAO.Z > SaveData</button>')
   var CopyWorkTitleButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品标题</button>')
   var CopyWorkIdButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品编号</button>')
   var CopyDLsiteStringButton = $('<button class="dwi-btn dwi-btn-brown dwi-next-item">用于整理的字符串</button>')
@@ -217,7 +218,8 @@
       var result = '('
       + (info.category == 'maniax' ? '同人' : info.work.ageProvision) + form + ') ['
       + info.work[info.work.published ? 'saleDate' : 'lastUpdateDate'].substr(2).split('-').join('') + '] ['
-      + info.work.id + '] [' + info.maker.name + '] ' + info.work.name
+        + info.work.id + '] [' + info.maker.name + '] ' + info.work.name
+      result = result.replace(' / ', '／').replace('/', '／').replace('　', ' ')
       SetTextToClipboard(result)
       layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
     }
@@ -286,6 +288,14 @@
     }
   )
 
+  SearchBySagaozButton.click(
+    function () {
+      var info = GetWorkInfo()
+      var url = 'https://cse.google.com/cse?cx=012651433025623183987%3Akkiu8qzvx58&q=STRING_HERE&oq=STRING_HERE&gs_l=partner.12...0.0.3.187.0.0.0.0.0.0.0.0..0.0.gsnos%2Cn%3D13...0.0..1ac..25.partner..18.1.106.bZitq-oRHKA#gsc.tab=0&gsc.q=' + encodeURI(info.work.name) + '&gsc.page=1'
+      window.open(url)
+    }
+  )
+
   layer.config({
     anim: 5,
     time: 0.5,
@@ -303,6 +313,7 @@
   ToolBarB.append(ButtonGroupB)
   ButtonGroupA.append(SearchByNyaaButton)
   ButtonGroupA.append(SearchByGgbasesButton)
+  ButtonGroupA.append(SearchBySagaozButton)
   ButtonGroupA.append(SearchField)
   ButtonGroupB.append(CopyWorkIdButton)
   ButtonGroupB.append(CopyWorkTitleButton)
