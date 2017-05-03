@@ -4,7 +4,10 @@
   var ButtonGroupA = $('<div style="display:inline"></div>')
   var ButtonGroupB = $('<div style="display:inline"></div>')
   var SearchByNyaaButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Nyaa</button>')
+  var SearchByPantsuNyaaButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Pantsu Nyaa</button>')
+  var SearchByAcgnXButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">AcgnX</button>')
   var SearchByGgbasesButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">GGBases</button>')
+  var SearchByTokyoToshokanButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Tokyo Toshokan</button>')
   var SearchBySagaozButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">SAGAO.Z > SaveData</button>')
   var CopyWorkTitleButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品标题</button>')
   var CopyWorkIdButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品编号</button>')
@@ -218,8 +221,8 @@
       var result = '('
       + (info.category == 'maniax' ? '同人' : info.work.ageProvision) + form + ') ['
       + info.work[info.work.published ? 'saleDate' : 'lastUpdateDate'].substr(2).split('-').join('') + '] ['
-        + info.work.id + '] [' + info.maker.name + '] ' + info.work.name
-      result = result.replace(' / ', '／').replace('/', '／').replace('　', ' ')
+      + info.work.id + '] [' + info.maker.name + '] ' + info.work.name
+      result = result.replace(' / ', '／').replace('/', '／').replace('　', ' ').replace('?', '？').replace('!', '！')
       SetTextToClipboard(result)
       layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
     }
@@ -280,10 +283,34 @@
     }
   )
 
+  SearchByPantsuNyaaButton.click(
+    function () {
+      var info = GetWorkInfo()
+      var url = 'https://sukeibei.pantsu.cat/search?q=' + encodeURI(info.work.name)
+      window.open(url)
+    }
+  )
+
+  SearchByAcgnXButton.click(
+    function () {
+      var info = GetWorkInfo()
+      var url = 'https://www.acgnx.se/search.php?keyword=' + encodeURI(info.work.name)
+      window.open(url)
+    }
+  )
+
   SearchByGgbasesButton.click(
     function () {
       var info = GetWorkInfo()
       var url = 'https://ggbases.com/search.so?p=0&title=' + encodeURI(info.work.name)
+      window.open(url)
+    }
+  )
+
+  SearchByTokyoToshokanButton.click(
+    function () {
+      var info = GetWorkInfo()
+      var url = 'https://www.tokyotosho.info/search.php?terms=' + encodeURI(info.work.name) + '&type=0'
       window.open(url)
     }
   )
@@ -303,16 +330,15 @@
     path: 'include/layer'
   })
 
-  $('#top_wrapper').css('margin-top', '0')
-  $('#topicpath').css('display', 'inline')
   $('#topicpath').after(ToolBarA)
-  $('#top_wrapper > div.base_title_br.clearfix').css('margin-top', '5px')
-  $('#work_name > a').css('display', 'inline')
   $('#work_name > a').after(ToolBarB)
   ToolBarA.append(ButtonGroupA)
   ToolBarB.append(ButtonGroupB)
   ButtonGroupA.append(SearchByNyaaButton)
+  ButtonGroupA.append(SearchByPantsuNyaaButton)
+  ButtonGroupA.append(SearchByAcgnXButton)
   ButtonGroupA.append(SearchByGgbasesButton)
+  ButtonGroupA.append(SearchByTokyoToshokanButton)
   ButtonGroupA.append(SearchBySagaozButton)
   ButtonGroupA.append(SearchField)
   ButtonGroupB.append(CopyWorkIdButton)
@@ -320,6 +346,11 @@
   ButtonGroupB.append(CopyDLsiteStringButton)
   ButtonGroupB.append(CopyInfoTableButton)
   ButtonGroupB.append(CopyBeautifiedInfoTableButton)
+
+  $('#top_wrapper').css('margin-top', '0')
+  $('#topicpath').css('display', 'inline')
+  $('#top_wrapper > div.base_title_br.clearfix').css('margin-top', '5px')
+  $('#work_name > a').css('display', 'inline')
 }
 
 DLsiteWorkInfo()
