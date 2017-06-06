@@ -23,6 +23,19 @@
         "dlsite-work-info.js"
       ],
       "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://sukebei.nyaa.si/view/*"
+      ],
+      "css": [
+        "nyaa-helper.css"
+      ],
+      "js": [
+        "includes/jquery/jquery-3.2.1.min.js",
+        "nyaa-helper.js"
+      ],
+      "run_at": "document_end"
     }
   ]
 }

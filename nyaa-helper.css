@@ -1,0 +1,10 @@
+﻿.nh-link {
+  cursor: default;
+  outline: none;
+  text-decoration: none;
+  color: #fff;
+}
+
+.nh-link:hover {
+  color: #fff;
+}

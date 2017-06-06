@@ -8,6 +8,7 @@
   var SearchByAcgnXButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">AcgnX</button>')
   var SearchByGgbasesButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">GGBases</button>')
   var SearchByTokyoToshokanButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Tokyo Toshokan</button>')
+  var SearchByNanrenBtButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Nanren BT</button>')
   var SearchBySagaozButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">SAGAO.Z > SaveData</button>')
   var CopyWorkTitleButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品标题</button>')
   var CopyWorkIdButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品编号</button>')
@@ -222,7 +223,21 @@
       + (info.category == 'maniax' ? '同人' : info.work.ageProvision) + form + ') ['
       + info.work[info.work.published ? 'saleDate' : 'lastUpdateDate'].substr(2).split('-').join('') + '] ['
       + info.work.id + '] [' + info.maker.name + '] ' + info.work.name
-      result = result.replace(' / ', '／').replace('/', '／').replace('　', ' ').replace('?', '？').replace('!', '！')
+      result = result
+        .replace(' / ', '／')
+        .replace('/', '／')
+        .replace(' \\ ', '＼')
+        .replace('\\', '＼')
+        .replace(' | ', '︱')
+        .replace('|', '︱')
+        .replace('　', ' ')
+        .replace(':', '：')
+        .replace('*', '﹡')
+        .replace('?', '？')
+        .replace('!', '！')
+        .replace('"', "'")
+        .replace('<', '〈')
+        .replace('>', '〉')
       SetTextToClipboard(result)
       layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
     }
@@ -256,6 +271,11 @@
         if (r != null) {
           url = 'http://www.dlsite.com/maniax/work/=/product_id/' + unescape(r[0]) + '.html'
         }
+        exp = new RegExp('([0-9]{3})GRJ([0-9]{3})')
+        var r = text.match(exp)
+        if (r != null) {
+          url = 'http://www.dlsite.com/maniax/work/=/product_id/RJ' + unescape(r[1]) + unescape(r[2]) + '.html'
+        }
         exp = new RegExp('VJ[0-9]{6}')
         r = text.match(exp)
         if (r != null) {
@@ -278,7 +298,7 @@
   SearchByNyaaButton.click(
     function () {
       var info = GetWorkInfo()
-      var url = 'https://sukebei.nyaa.se/?page=search&cats=7_0&filter=0&term=' + encodeURI(info.work.id + '|' + info.work.name)
+      var url = 'https://sukebei.nyaa.si/?q=' + encodeURIComponent(info.work.id + '|' + info.work.name) + '&f=0&c=1_0'
       window.open(url)
     }
   )
@@ -286,7 +306,7 @@
   SearchByPantsuNyaaButton.click(
     function () {
       var info = GetWorkInfo()
-      var url = 'https://sukeibei.pantsu.cat/search?q=' + encodeURI(info.work.name)
+      var url = 'https://sukeibei.pantsu.cat/search?q=' + encodeURIComponent(info.work.name)
       window.open(url)
     }
   )
@@ -294,7 +314,7 @@
   SearchByAcgnXButton.click(
     function () {
       var info = GetWorkInfo()
-      var url = 'https://www.acgnx.se/search.php?keyword=' + encodeURI(info.work.name)
+      var url = 'https://www.acgnx.se/search.php?keyword=' + encodeURIComponent(info.work.name)
       window.open(url)
     }
   )
@@ -302,7 +322,7 @@
   SearchByGgbasesButton.click(
     function () {
       var info = GetWorkInfo()
-      var url = 'https://ggbases.com/search.so?p=0&title=' + encodeURI(info.work.name)
+      var url = 'https://ggbases.com/search.so?p=0&title=' + encodeURIComponent(info.work.name)
       window.open(url)
     }
   )
@@ -310,7 +330,15 @@
   SearchByTokyoToshokanButton.click(
     function () {
       var info = GetWorkInfo()
-      var url = 'https://www.tokyotosho.info/search.php?terms=' + encodeURI(info.work.name) + '&type=0'
+      var url = 'https://www.tokyotosho.info/search.php?terms=' + encodeURIComponent(info.work.name) + '&type=0'
+      window.open(url)
+    }
+  )
+
+  SearchByNanrenBtButton.click(
+    function () {
+      var info = GetWorkInfo()
+      var url = 'http://nanrenbt.com/nanren/' + encodeURIComponent(info.work.name) + '/1-0-0.html'
       window.open(url)
     }
   )
@@ -318,7 +346,7 @@
   SearchBySagaozButton.click(
     function () {
       var info = GetWorkInfo()
-      var url = 'https://cse.google.com/cse?cx=012651433025623183987%3Akkiu8qzvx58&q=STRING_HERE&oq=STRING_HERE&gs_l=partner.12...0.0.3.187.0.0.0.0.0.0.0.0..0.0.gsnos%2Cn%3D13...0.0..1ac..25.partner..18.1.106.bZitq-oRHKA#gsc.tab=0&gsc.q=' + encodeURI(info.work.name) + '&gsc.page=1'
+      var url = 'https://cse.google.com/cse?cx=012651433025623183987%3Akkiu8qzvx58&q=STRING_HERE&oq=STRING_HERE&gs_l=partner.12...0.0.3.187.0.0.0.0.0.0.0.0..0.0.gsnos%2Cn%3D13...0.0..1ac..25.partner..18.1.106.bZitq-oRHKA#gsc.tab=0&gsc.q=' + encodeURIComponent(info.work.name) + '&gsc.page=1'
       window.open(url)
     }
   )
@@ -335,10 +363,11 @@
   ToolBarA.append(ButtonGroupA)
   ToolBarB.append(ButtonGroupB)
   ButtonGroupA.append(SearchByNyaaButton)
-  ButtonGroupA.append(SearchByPantsuNyaaButton)
-  ButtonGroupA.append(SearchByAcgnXButton)
+  // ButtonGroupA.append(SearchByPantsuNyaaButton)
+  // ButtonGroupA.append(SearchByAcgnXButton)
   ButtonGroupA.append(SearchByGgbasesButton)
   ButtonGroupA.append(SearchByTokyoToshokanButton)
+  ButtonGroupA.append(SearchByNanrenBtButton)
   ButtonGroupA.append(SearchBySagaozButton)
   ButtonGroupA.append(SearchField)
   ButtonGroupB.append(CopyWorkIdButton)
