@@ -8,7 +8,9 @@
   var SearchByAcgnXButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">AcgnX</button>')
   var SearchByGgbasesButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">GGBases</button>')
   var SearchByTokyoToshokanButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Tokyo Toshokan</button>')
+  var SearchByExHentaiButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">ExHentai</button>')
   var SearchByNanrenBtButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Nanren BT</button>')
+  var SearchBySoBaiduPanButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">SoBaiduPan</button>')
   var SearchBySagaozButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">SAGAO.Z > SaveData</button>')
   var CopyWorkTitleButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品标题</button>')
   var CopyWorkIdButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品编号</button>')
@@ -335,10 +337,26 @@
     }
   )
 
+  SearchByExHentaiButton.click(
+    function () {
+      var info = GetWorkInfo()
+      var url = 'https://exhentai.org/?f_doujinshi=1&f_manga=1&f_artistcg=1&f_gamecg=1&f_western=1&f_non-h=1&f_imageset=1&f_cosplay=1&f_asianporn=1&f_misc=1&f_search=' + encodeURIComponent(info.work.name) + '&f_apply=Apply+Filter'
+      window.open(url)
+    }
+  )
+
   SearchByNanrenBtButton.click(
     function () {
       var info = GetWorkInfo()
       var url = 'http://nanrenbt.com/nanren/' + encodeURIComponent(info.work.name) + '/1-0-0.html'
+      window.open(url)
+    }
+  )
+
+  SearchBySoBaiduPanButton.click(
+    function () {
+      var info = GetWorkInfo()
+      var url = 'http://www.sobaidupan.com/search.asp?wd=' + encodeURIComponent(info.work.name) + '&so_md5key=71e136e282d5f87b5faccf245b5c2466'
       window.open(url)
     }
   )
@@ -367,7 +385,9 @@
   // ButtonGroupA.append(SearchByAcgnXButton)
   ButtonGroupA.append(SearchByGgbasesButton)
   ButtonGroupA.append(SearchByTokyoToshokanButton)
+  ButtonGroupA.append(SearchByExHentaiButton)
   ButtonGroupA.append(SearchByNanrenBtButton)
+  ButtonGroupA.append(SearchBySoBaiduPanButton)
   ButtonGroupA.append(SearchBySagaozButton)
   ButtonGroupA.append(SearchField)
   ButtonGroupB.append(CopyWorkIdButton)
