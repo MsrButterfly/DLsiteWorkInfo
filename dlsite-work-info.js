@@ -202,27 +202,29 @@
       }
       var info = GetWorkInfo()
       // Calculate form.
+      var ageProvision = info.category == 'maniax' ? '同人' : info.work.ageProvision
       var form = ''
-      if (anyOf_inArray(['ムービーファイル', 'ムービー(AVI)', 'ムービー(WMV)', 'ムービー(MPEG)'], info.work.fileForms)) {
+      if (anyOf_inArray(['ムービーファイル', 'ムービー(AVI)', 'ムービー(WMV)', 'ムービー(MPEG)', 'ムービー(MP4)', 'AVI', 'WMV', 'MPEG', 'MP4'], info.work.fileForms)) {
         form = 'アニメ'
-      } else if (anyOf_inArray(['アプリケーション', 'Flash', 'HTML(+動画)'], info.work.fileForms)) {
+      } else if (anyOf_inArray(['アプリケーション', 'Flash', 'HTML(+動画)', 'HTML(+Flash)'], info.work.fileForms)) {
         form = $.inArray('動画作品', info.work.workForms) != -1 ? 'アニメゲーム' : 'ゲーム'
-      } else if (anyOf_inArray(['アドベンチャーゲーム'], info.work.workForms)) {
+      } else if (anyOf_inArray(['アドベンチャーゲーム', 'シミュレーションゲーム'], info.work.workForms)) {
         form = 'ゲーム'
-      } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'PDF'], info.work.fileForms)) {
-        if (anyOf_inArray(['イラスト(CG)+ノベル', 'イラスト集(CG集)'], info.work.workForms) != -1) {
-          form = 'CG集'
-        }
+      } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'HTML+画像', 'PDF', 'JPEG'], info.work.fileForms) && anyOf_inArray(['イラスト(CG)+ノベル', 'イラスト集(CG集)', 'CG+ノベル', 'CG集'], info.work.workForms)) {
+        form = 'CG集'
       } else if (anyOf_inArray(['オーディオ(MP3)', 'オーディオ(WAV)'], info.work.fileForms) && $.inArray('音声作品', info.work.workForms) != -1) {
         form = '音声'
       } else if (anyOf_inArray(['マンガ', 'デジタルコミック'], info.work.workForms)) {
         form = 'コミック'
+        if (info.work.ageProvision == '18禁') {
+          ageProvision = '成人'
+        }
       } else if ($.inArray('その他', info.work.workForms) != -1) {
         form = info.work.workForms[1]
       }
       // Concat result.
       var result = '('
-      + (info.category == 'maniax' ? '同人' : info.work.ageProvision) + form + ') ['
+      + ageProvision + form + ') ['
       + info.work[info.work.published ? 'saleDate' : 'lastUpdateDate'].substr(2).split('-').join('') + '] ['
       + info.work.id + '] [' + info.maker.name + '] ' + info.work.name
       result = result
@@ -237,7 +239,7 @@
         .replace('*', '﹡')
         .replace('?', '？')
         .replace('!', '！')
-        .replace('"', "'")
+        .replace('"', "''")
         .replace('<', '〈')
         .replace('>', '〉')
       SetTextToClipboard(result)
@@ -356,7 +358,7 @@
   SearchBySoBaiduPanButton.click(
     function () {
       var info = GetWorkInfo()
-      var url = 'http://www.sobaidupan.com/search.asp?wd=' + encodeURIComponent(info.work.name) + '&so_md5key=71e136e282d5f87b5faccf245b5c2466'
+      var url = 'http://www.sobaidupan.com/search.asp?wd=' + encodeURIComponent(info.work.name) + '&so_md5key=53adf51ced7cd2c3e6ff1625163c7c10'
       window.open(url)
     }
   )
