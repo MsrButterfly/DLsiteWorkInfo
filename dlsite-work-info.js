@@ -217,7 +217,7 @@
       } else if (anyOf_inArray(['マンガ', 'デジタルコミック'], info.work.workForms)) {
         form = 'コミック'
         if (info.work.ageProvision == '18禁') {
-          ageProvision = '成人'
+          ageProvision = '成年'
         }
       } else if ($.inArray('その他', info.work.workForms) != -1) {
         form = info.work.workForms[1]
@@ -228,20 +228,20 @@
       + info.work[info.work.published ? 'saleDate' : 'lastUpdateDate'].substr(2).split('-').join('') + '] ['
       + info.work.id + '] [' + info.maker.name + '] ' + info.work.name
       result = result
-        .replace(' / ', '／')
-        .replace('/', '／')
-        .replace(' \\ ', '＼')
-        .replace('\\', '＼')
-        .replace(' | ', '︱')
-        .replace('|', '︱')
-        .replace('　', ' ')
-        .replace(':', '：')
-        .replace('*', '﹡')
-        .replace('?', '？')
-        .replace('!', '！')
-        .replace('"', "''")
-        .replace('<', '〈')
-        .replace('>', '〉')
+        .split(' / ').join('／')
+        .split('/').join('／')
+        .split(' \\ ').join('＼')
+        .split('\\').join('＼')
+        .split(' | ').join('︱')
+        .split('|').join('︱')
+        .split('　').join(' ')
+        .split(':').join('：')
+        .split('*').join('﹡')
+        .split('?').join('？')
+        .split('!').join('！')
+        .split('"').join("''")
+        .split('<').join('〈')
+        .split('>').join('〉')
       SetTextToClipboard(result)
       layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
     }
