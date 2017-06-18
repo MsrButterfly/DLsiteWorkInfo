@@ -210,7 +210,7 @@
         form = $.inArray('動画作品', info.work.workForms) != -1 ? 'アニメゲーム' : 'ゲーム'
       } else if (anyOf_inArray(['アドベンチャーゲーム', 'シミュレーションゲーム'], info.work.workForms)) {
         form = 'ゲーム'
-      } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'HTML+画像', 'PDF', 'JPEG'], info.work.fileForms) && anyOf_inArray(['イラスト(CG)+ノベル', 'イラスト集(CG集)', 'CG+ノベル', 'CG集'], info.work.workForms)) {
+      } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'HTML+画像', 'PDF', 'BMP', 'JPEG', 'PNG'], info.work.fileForms) && anyOf_inArray(['イラスト(CG)+ノベル', 'イラスト集(CG集)', 'イラスト集', 'CG+ノベル', 'CG集'], info.work.workForms)) {
         form = 'CG集'
       } else if (anyOf_inArray(['オーディオ(MP3)', 'オーディオ(WAV)'], info.work.fileForms) && $.inArray('音声作品', info.work.workForms) != -1) {
         form = '音声'
@@ -235,13 +235,21 @@
         .split(' | ').join('︱')
         .split('|').join('︱')
         .split('　').join(' ')
+        .split(': ').join('：')
         .split(':').join('：')
+        .split(' * ').join('﹡')
         .split('*').join('﹡')
+        .split('? ').join('？')
         .split('?').join('？')
+        .split('! ').join('！')
         .split('!').join('！')
         .split('"').join("''")
+        .split(' <').join('〈')
         .split('<').join('〈')
+        .split('> ').join('〉')
         .split('>').join('〉')
+      result = result
+        .split('(モーションコミック版)').join('（モーションコミック版）') // For サークル「survive」, will be changed to more generalized implementation in the future
       SetTextToClipboard(result)
       layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
     }
