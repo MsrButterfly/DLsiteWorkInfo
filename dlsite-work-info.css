@@ -1,8 +1,10 @@
 #dwi-toolbar-a {
+  display: inline;
   vertical-align: 0%;
 }
 
 #dwi-toolbar-b {
+  display: inline;
   vertical-align: 8%;
 }
 
@@ -95,6 +97,10 @@
   float: right;
   border: 1px solid #dadada;
   color: #555;
-  width: 250px;
+  width: 150px;
   border-radius: 3px;
+}
+
+#dwi-search-button {
+  float: right
 }

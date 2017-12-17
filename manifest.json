@@ -4,8 +4,9 @@
   "description": "Get data strings from DLsite work pages.",
   "version": "1.0",
   "permissions": [
+    "clipboardRead",
     "clipboardWrite",
-    "http://www.dlsite.com/*"
+    "*://*/*"
   ],
   "content_scripts": [
     {

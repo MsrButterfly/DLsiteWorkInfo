@@ -1,23 +1,53 @@
 ﻿var DLsiteWorkInfo = function () {
-  var ToolBarA = $('<div id="dwi-toolbar-a" style="display:inline"></div>')
-  var ToolBarB = $('<div id="dwi-toolbar-b" style="display:inline"></div>')
+
+  var ToolBarA = $('<div id="dwi-toolbar-a"></div>')
+  var ToolBarB = $('<div id="dwi-toolbar-b"></div>')
   var ButtonGroupA = $('<div style="display:inline"></div>')
   var ButtonGroupB = $('<div style="display:inline"></div>')
   var SearchByNyaaButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Nyaa</button>')
   var SearchByPantsuNyaaButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Pantsu Nyaa</button>')
   var SearchByAcgnXButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">AcgnX</button>')
   var SearchByGgbasesButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">GGBases</button>')
+  var SearchByAnimeSharingButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Anime-Sharing</button>')
+  var SearchByErokuniButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Erokuni</button>')
+  var SearchBy2dkfButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">2DKF</button>')
   var SearchByTokyoToshokanButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Tokyo Toshokan</button>')
   var SearchByExHentaiButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">ExHentai</button>')
-  var SearchByNanrenBtButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Nanren BT</button>')
+  var SearchByGoogleButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">Google</button>')
+  var SearchByBtdbButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">BTDB</button>')
   var SearchBySoBaiduPanButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">SoBaiduPan</button>')
-  var SearchBySagaozButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">SAGAO.Z > SaveData</button>')
+  var SearchBySagaozButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">SAGAO.Z</button>')
   var CopyWorkTitleButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品标题</button>')
   var CopyWorkIdButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品编号</button>')
   var CopyDLsiteStringButton = $('<button class="dwi-btn dwi-btn-brown dwi-next-item">用于整理的字符串</button>')
   var CopyInfoTableButton = $('<button class="dwi-btn dwi-btn-green dwi-next-item">压缩的作品信息</button>')
   var CopyBeautifiedInfoTableButton = $('<button class="dwi-btn dwi-btn-purple dwi-next-item">格式化的作品信息</button>')
   var SearchField = $('<input id="dwi-search-field" type="search" placeholder="输入包含ID的字符串跳转到作品" class="dwi-next-item">')
+  var SearchWithClipboardContentButton = $('<button id="dwi-search-button" class="dwi-btn dwi-btn-gray dwi-next-item">剪贴板</button>')
+
+  var Submit = function (url, method, dict) {
+    var form = $(`<form action="${url}" method="${method}" target="_blank"></form>`)
+    var submitExists = false
+    for (var key in dict) {
+      if (dict[key] == null) {
+        form.append($(`<input type="hidden" name="${key}">`))
+      } else {
+        if (key == 'submit') {
+          submitExists = true
+          form.append($(`<input id="dwi-form-submit-btn" type="hidden" name="submit" value="${dict[key]}">`))
+        } else {
+          form.append($(`<input type="hidden" name="${key}" value="${dict[key]}">`))
+        }
+      }
+    }
+    $('body').append(form)
+    if (submitExists) {
+      $('#dwi-form-submit-btn').click()
+    } else {
+      form.submit()
+    }
+    form.remove()
+  }
 
   var SetTextToClipboard = function (text) {
     // window.copy(result)
@@ -60,7 +90,7 @@
   }
 
   var GetWorkId = function () {
-    var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng)/(work|announce)/=/product_id/(.*)$')
+    var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng|home)/(work|announce)/=/product_id/(.*)$')
     var url = $('#work_name > a').attr('href')
     if (url == null) {
       var url = window.location.href
@@ -70,7 +100,7 @@
   }
 
   var WorkIsPublished = function () {
-    var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng)/(work|announce)/.*')
+    var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng|home)/(work|announce)/.*')
     var r = window.location.href.match(exp)
     return unescape(r[2]) == 'work'
   }
@@ -82,9 +112,12 @@
     }
     result.work = {
       'id': GetWorkId(),
-      'name': $('#work_name > a').text().substr(1),
+      'name': $('#work_name > a > span').text(),
       'url': $('#work_name > a').attr('href'),
       'published': WorkIsPublished()
+    }
+    if (result.work.name == '') {
+      result.work.name = $('#work_name > a').text()
     }
     if ($.inArray(result.work.name.substr(0, 8), ['DLsite専売', 'DLsite独占']) != -1) {
       result.work.name = result.work.name.substr(8)
@@ -177,7 +210,7 @@
     function () {
       var info = GetWorkInfo()
       SetTextToClipboard(info.work.id)
-      layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
+      layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
     }
   )
 
@@ -185,7 +218,7 @@
     function () {
       var info = GetWorkInfo()
       SetTextToClipboard(info.work.name)
-      layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
+      layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
     }
   )
 
@@ -206,13 +239,13 @@
       var form = ''
       if (anyOf_inArray(['ムービーファイル', 'ムービー(AVI)', 'ムービー(WMV)', 'ムービー(MPEG)', 'ムービー(MP4)', 'AVI', 'WMV', 'MPEG', 'MP4'], info.work.fileForms)) {
         form = 'アニメ'
-      } else if (anyOf_inArray(['アプリケーション', 'Flash', 'HTML(+動画)', 'HTML(+Flash)'], info.work.fileForms)) {
-        form = $.inArray('動画作品', info.work.workForms) != -1 ? 'アニメゲーム' : 'ゲーム'
-      } else if (anyOf_inArray(['アドベンチャーゲーム', 'シミュレーションゲーム'], info.work.workForms)) {
+      } else if (anyOf_inArray(['アプリケーション', 'Flash', 'HTML(+動画)', 'HTML(+Flash)', 'HTML(Flash)', 'HTML(動画)'], info.work.fileForms)) {
+        form = anyOf_inArray(['動画作品', '動画'], info.work.workForms) ? 'アニメゲーム' : 'ゲーム'
+      } else if (anyOf_inArray(['アドベンチャーゲーム', 'シミュレーションゲーム', 'アドベンチャー'], info.work.workForms)) {
         form = 'ゲーム'
-      } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'HTML+画像', 'PDF', 'BMP', 'JPEG', 'PNG'], info.work.fileForms) && anyOf_inArray(['イラスト(CG)+ノベル', 'イラスト集(CG集)', 'イラスト集', 'CG+ノベル', 'CG集'], info.work.workForms)) {
+      } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'HTML+画像', 'PDF', 'BMP', 'JPEG', 'PNG', '専用ビューア'], info.work.fileForms) && anyOf_inArray(['イラスト+ノベル', 'イラスト(CG)+ノベル', 'イラスト集(CG集)', 'イラスト集', 'CG+ノベル', 'CG集'], info.work.workForms)) {
         form = 'CG集'
-      } else if (anyOf_inArray(['オーディオ(MP3)', 'オーディオ(WAV)'], info.work.fileForms) && $.inArray('音声作品', info.work.workForms) != -1) {
+      } else if (anyOf_inArray(['オーディオ(MP3)', 'オーディオ(WAV)', 'MP3', 'WAV'], info.work.fileForms) && anyOf_inArray(['音声作品', '音声'], info.work.workForms)) {
         form = '音声'
       } else if (anyOf_inArray(['マンガ', 'デジタルコミック'], info.work.workForms)) {
         form = 'コミック'
@@ -224,9 +257,9 @@
       }
       // Concat result.
       var result = '('
-      + ageProvision + form + ') ['
-      + info.work[info.work.published ? 'saleDate' : 'lastUpdateDate'].substr(2).split('-').join('') + '] ['
-      + info.work.id + '] [' + info.maker.name + '] ' + info.work.name
+        + ageProvision + form + ') ['
+        + info.work[info.work.published ? 'saleDate' : 'lastUpdateDate'].substr(2).split('-').join('') + '] ['
+        + info.work.id + '] [' + info.maker.name + '] ' + info.work.name
       result = result
         .split(' / ').join('／')
         .split('/').join('／')
@@ -251,7 +284,7 @@
       result = result
         .split('(モーションコミック版)').join('（モーションコミック版）') // For サークル「survive」, will be changed to more generalized implementation in the future
       SetTextToClipboard(result)
-      layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
+      layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
     }
   )
 
@@ -259,7 +292,7 @@
     function () {
       var info = GetWorkInfo()
       SetTextToClipboard(JSON.stringify(info))
-      layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
+      layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
     }
   )
 
@@ -268,7 +301,7 @@
       var info = GetWorkInfo()
       var result = JSON.stringify(info, null, 2)
       SetTextToClipboard(JSON.stringify(info, null, 2))
-      layer.tips('文本已被复制到剪贴板', $(this), {time: 1000})
+      layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
     }
   )
 
@@ -283,7 +316,7 @@
         if (r != null) {
           url = 'http://www.dlsite.com/maniax/work/=/product_id/' + unescape(r[0]) + '.html'
         }
-        exp = new RegExp('([0-9]{3})GRJ([0-9]{3})')
+        exp = new RegExp('([0-9]{3})[A-Z]RJ([0-9]{3})')
         var r = text.match(exp)
         if (r != null) {
           url = 'http://www.dlsite.com/maniax/work/=/product_id/RJ' + unescape(r[1]) + unescape(r[2]) + '.html'
@@ -301,9 +334,20 @@
         if (url != null) {
           window.location.href = url
         } else {
-          layer.tips('未发现作品ID', $(this), {time: 1000})
+          layer.tips('未发现作品ID', $(this), { time: 1000 })
         }
       }
+    }
+  )
+
+  SearchWithClipboardContentButton.click(
+    function (event) {
+      SearchField.val('')
+      SearchField.focus()
+      document.execCommand('paste')
+      var e = jQuery.Event('keypress');
+      e.which = 13;
+      SearchField.trigger(e)
     }
   )
 
@@ -339,6 +383,44 @@
     }
   )
 
+  SearchByAnimeSharingButton.click(
+    function () {
+      var info = GetWorkInfo()
+      Submit('http://www.anime-sharing.com/forum/search.php?do=process', 'post', {
+        'securitytoken': 'guest',
+        'sortby': 'relevance',
+        'order': 'descending',
+        'do': 'process',
+        'query': info.work.name
+      })
+    }
+  )
+
+  SearchByErokuniButton.click(
+    function () {
+      var info = GetWorkInfo()
+      var url = 'http://dou.erokuni.net/?s=' + encodeURIComponent(info.work.name) + '&submit=Search'
+      window.open(url)
+    }
+  )
+
+  SearchBy2dkfButton.click(
+    function () {
+      var info = GetWorkInfo()
+      Submit('http://bbs.2dkf.com/search.php?', 'post', {
+        'step': '2',
+        'method': 'AND',
+        'sch_area': '0',
+        's_type': 'forum',
+        'f_fid': 'all',
+        'orderway': 'lastpost',
+        'asc': 'DESC',
+        'keyword': info.work.name,
+        'submit': '搜索帖子'
+      })
+    }
+  ) // Illegal operation
+
   SearchByTokyoToshokanButton.click(
     function () {
       var info = GetWorkInfo()
@@ -355,10 +437,18 @@
     }
   )
 
-  SearchByNanrenBtButton.click(
+  SearchByGoogleButton.click(
     function () {
       var info = GetWorkInfo()
-      var url = 'http://nanrenbt.com/nanren/' + encodeURIComponent(info.work.name) + '/1-0-0.html'
+      var url = 'https://www.google.com/search?q=' + encodeURIComponent(info.work.name)
+      window.open(url)
+    }
+  )
+
+  SearchByBtdbButton.click(
+    function () {
+      var info = GetWorkInfo()
+      var url = 'https://btdb.to/q/' + encodeURIComponent(info.work.name) + '/'
       window.open(url)
     }
   )
@@ -366,19 +456,21 @@
   SearchBySoBaiduPanButton.click(
     function () {
       var info = GetWorkInfo()
-      var url = 'http://www.sobaidupan.com/search.asp?wd=' + encodeURIComponent(info.work.name) + '&so_md5key=53adf51ced7cd2c3e6ff1625163c7c10'
-      window.open(url)
+      Submit('http://www.sobaidupan.com/search.asp', 'get', {
+        'wd': info.work.name,
+        'so_md5key': '0cdb7d595f5a75a833c4b4c7f82bd7dc'
+      })
     }
   )
 
   SearchBySagaozButton.click(
     function () {
       var info = GetWorkInfo()
-      var url = 'https://cse.google.com/cse?cx=012651433025623183987%3Akkiu8qzvx58&q=STRING_HERE&oq=STRING_HERE&gs_l=partner.12...0.0.3.187.0.0.0.0.0.0.0.0..0.0.gsnos%2Cn%3D13...0.0..1ac..25.partner..18.1.106.bZitq-oRHKA#gsc.tab=0&gsc.q=' + encodeURIComponent(info.work.name) + '&gsc.page=1'
+      var url = 'https://cse.google.com/cse?cx=012651433025623183987%3Akkiu8qzvx58&q=' + encodeURIComponent(info.work.name)
       window.open(url)
     }
   )
-
+  
   layer.config({
     anim: 5,
     time: 0.5,
@@ -394,11 +486,16 @@
   // ButtonGroupA.append(SearchByPantsuNyaaButton)
   // ButtonGroupA.append(SearchByAcgnXButton)
   ButtonGroupA.append(SearchByGgbasesButton)
-  ButtonGroupA.append(SearchByTokyoToshokanButton)
+  ButtonGroupA.append(SearchByAnimeSharingButton)
+  ButtonGroupA.append(SearchByErokuniButton)
+  // ButtonGroupA.append(SearchBy2dkfButton)
+  // ButtonGroupA.append(SearchByTokyoToshokanButton)
   ButtonGroupA.append(SearchByExHentaiButton)
-  ButtonGroupA.append(SearchByNanrenBtButton)
-  ButtonGroupA.append(SearchBySoBaiduPanButton)
+  ButtonGroupA.append(SearchByGoogleButton)
+  ButtonGroupA.append(SearchByBtdbButton)
+  // ButtonGroupA.append(SearchBySoBaiduPanButton)
   ButtonGroupA.append(SearchBySagaozButton)
+  ButtonGroupA.append(SearchWithClipboardContentButton)
   ButtonGroupA.append(SearchField)
   ButtonGroupB.append(CopyWorkIdButton)
   ButtonGroupB.append(CopyWorkTitleButton)
@@ -410,6 +507,7 @@
   $('#topicpath').css('display', 'inline')
   $('#top_wrapper > div.base_title_br.clearfix').css('margin-top', '5px')
   $('#work_name > a').css('display', 'inline')
+
 }
 
 DLsiteWorkInfo()
