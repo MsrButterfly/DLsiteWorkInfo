@@ -27,6 +27,23 @@
     },
     {
       "matches": [
+        "http://www.dlsite.com/*/mypage/wishlist",
+        "http://www.dlsite.com/*/mypage/wishlist/*"
+      ],
+      "css": [
+        "includes/layer/skin/default/layer.css",
+        "dlsite-work-info.css",
+        "dlsite-wishlist-helper.css"
+      ],
+      "js": [
+        "includes/jquery/jquery-3.2.1.min.js",
+        "includes/layer/layer.js",
+        "dlsite-wishlist-helper.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
         "https://sukebei.nyaa.si/view/*"
       ],
       "css": [
