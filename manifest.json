@@ -6,6 +6,7 @@
   "permissions": [
     "clipboardRead",
     "clipboardWrite",
+    "storage",
     "*://*/*"
   ],
   "content_scripts": [
@@ -15,12 +16,13 @@
         "http://www.dlsite.com/*/announce/*"
       ],
       "css": [
-        "includes/layer/skin/default/layer.css",
+        "includes/layer/theme/default/layer.css",
         "dlsite-work-info.css"
       ],
       "js": [
         "includes/jquery/jquery-3.2.1.min.js",
         "includes/layer/layer.js",
+        "utility.js",
         "dlsite-work-info.js"
       ],
       "run_at": "document_end"
@@ -31,13 +33,14 @@
         "http://www.dlsite.com/*/mypage/wishlist/*"
       ],
       "css": [
-        "includes/layer/skin/default/layer.css",
+        "includes/layer/theme/default/layer.css",
         "dlsite-work-info.css",
         "dlsite-wishlist-helper.css"
       ],
       "js": [
         "includes/jquery/jquery-3.2.1.min.js",
         "includes/layer/layer.js",
+        "utility.js",
         "dlsite-wishlist-helper.js"
       ],
       "run_at": "document_end"
@@ -51,7 +54,40 @@
       ],
       "js": [
         "includes/jquery/jquery-3.2.1.min.js",
+        "utility.js",
         "nyaa-helper.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "http://ecchi.iwara.tv/videos/*"
+      ],
+      "css": [
+        "includes/layer/theme/default/layer.css",
+        "iwara-work-info.css"
+      ],
+      "js": [
+        "includes/jquery/jquery-3.2.1.min.js",
+        "includes/layer/layer.js",
+        "utility.js",
+        "iwara-work-info.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "http://www.getchu.com/soft.phtml*"
+      ],
+      "css": [
+        "includes/layer/theme/default/layer.css",
+        "getchu-work-info.css"
+      ],
+      "js": [
+        "includes/jquery/jquery-3.2.1.min.js",
+        "includes/layer/layer.js",
+        "utility.js",
+        "getchu-work-info.js"
       ],
       "run_at": "document_end"
     }

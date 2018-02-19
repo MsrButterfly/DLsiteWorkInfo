@@ -22,6 +22,7 @@
   var CopyDLsiteStringButton = $('<button class="dwi-btn dwi-btn-brown dwi-next-item">用于整理的字符串</button>')
   var CopyInfoTableButton = $('<button class="dwi-btn dwi-btn-green dwi-next-item">压缩的作品信息</button>')
   var CopyBeautifiedInfoTableButton = $('<button class="dwi-btn dwi-btn-purple dwi-next-item">格式化的作品信息</button>')
+  var LocalWorkInfoButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">本地副本</button>')
   var SearchField = $('<input id="dwi-search-field" type="search" placeholder="输入包含ID的字符串跳转到作品" class="dwi-next-item">')
   var SearchWithClipboardContentButton = $('<button id="dwi-search-button" class="dwi-btn dwi-btn-gray dwi-next-item">剪贴板</button>')
 
@@ -47,16 +48,6 @@
       form.submit()
     }
     form.remove()
-  }
-
-  var SetTextToClipboard = function (text) {
-    // window.copy(result)
-    var elem = $('<textarea/>')
-    elem.text(text)
-    $('body').append(elem)
-    elem.select()
-    document.execCommand('copy')
-    elem.remove()
   }
 
   var GetCategory = function () {
@@ -209,7 +200,7 @@
   CopyWorkIdButton.click(
     function () {
       var info = GetWorkInfo()
-      SetTextToClipboard(info.work.id)
+      Utility.SetTextToClipboard(info.work.id)
       layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
     }
   )
@@ -217,7 +208,7 @@
   CopyWorkTitleButton.click(
     function () {
       var info = GetWorkInfo()
-      SetTextToClipboard(info.work.name)
+      Utility.SetTextToClipboard(info.work.name)
       layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
     }
   )
@@ -237,7 +228,7 @@
       // Calculate form.
       var ageProvision = info.category == 'maniax' ? '同人' : info.work.ageProvision
       var form = ''
-      if (anyOf_inArray(['ムービーファイル', 'ムービー(AVI)', 'ムービー(WMV)', 'ムービー(MPEG)', 'ムービー(MP4)', 'AVI', 'WMV', 'MPEG', 'MP4'], info.work.fileForms)) {
+      if (anyOf_inArray(['ムービーファイル', 'ムービー', 'ムービー(AVI)', 'ムービー(WMV)', 'ムービー(MPEG)', 'ムービー(MP4)', 'AVI', 'WMV', 'MPEG', 'MP4'], info.work.fileForms)) {
         form = 'アニメ'
       } else if (anyOf_inArray(['アプリケーション', 'Flash', 'HTML(+動画)', 'HTML(+Flash)', 'HTML(Flash)', 'HTML(動画)'], info.work.fileForms)) {
         form = anyOf_inArray(['動画作品', '動画'], info.work.workForms) ? 'アニメゲーム' : 'ゲーム'
@@ -245,7 +236,7 @@
         form = 'ゲーム'
       } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'HTML+画像', 'PDF', 'BMP', 'JPEG', 'PNG', '専用ビューア'], info.work.fileForms) && anyOf_inArray(['イラスト+ノベル', 'イラスト(CG)+ノベル', 'イラスト集(CG集)', 'イラスト集', 'CG+ノベル', 'CG集'], info.work.workForms)) {
         form = 'CG集'
-      } else if (anyOf_inArray(['オーディオ(MP3)', 'オーディオ(WAV)', 'MP3', 'WAV'], info.work.fileForms) && anyOf_inArray(['音声作品', '音声'], info.work.workForms)) {
+      } else if (anyOf_inArray(['オーディオ', 'オーディオ(MP3)', 'オーディオ(WAV)', 'オーディオ(FLAC)', 'MP3', 'WAV', 'FLAC'], info.work.fileForms) && anyOf_inArray(['音声作品', '音声'], info.work.workForms)) {
         form = '音声'
       } else if (anyOf_inArray(['マンガ', 'デジタルコミック'], info.work.workForms)) {
         form = 'コミック'
@@ -260,30 +251,10 @@
         + ageProvision + form + ') ['
         + info.work[info.work.published ? 'saleDate' : 'lastUpdateDate'].substr(2).split('-').join('') + '] ['
         + info.work.id + '] [' + info.maker.name + '] ' + info.work.name
-      result = result
-        .split(' / ').join('／')
-        .split('/').join('／')
-        .split(' \\ ').join('＼')
-        .split('\\').join('＼')
-        .split(' | ').join('︱')
-        .split('|').join('︱')
-        .split('　').join(' ')
-        .split(': ').join('：')
-        .split(':').join('：')
-        .split(' * ').join('﹡')
-        .split('*').join('﹡')
-        .split('? ').join('？')
-        .split('?').join('？')
-        .split('! ').join('！')
-        .split('!').join('！')
-        .split('"').join("''")
-        .split(' <').join('〈')
-        .split('<').join('〈')
-        .split('> ').join('〉')
-        .split('>').join('〉')
+      result = result.toFileNameFormat()
       result = result
         .split('(モーションコミック版)').join('（モーションコミック版）') // For サークル「survive」, will be changed to more generalized implementation in the future
-      SetTextToClipboard(result)
+      Utility.SetTextToClipboard(result)
       layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
     }
   )
@@ -291,7 +262,7 @@
   CopyInfoTableButton.click(
     function () {
       var info = GetWorkInfo()
-      SetTextToClipboard(JSON.stringify(info))
+      Utility.SetTextToClipboard(JSON.stringify(info))
       layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
     }
   )
@@ -300,7 +271,7 @@
     function () {
       var info = GetWorkInfo()
       var result = JSON.stringify(info, null, 2)
-      SetTextToClipboard(JSON.stringify(info, null, 2))
+      Utility.SetTextToClipboard(JSON.stringify(info, null, 2))
       layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
     }
   )
@@ -354,7 +325,11 @@
   SearchByNyaaButton.click(
     function () {
       var info = GetWorkInfo()
-      var url = 'https://sukebei.nyaa.si/?q=' + encodeURIComponent(info.work.id + '|' + info.work.name) + '&f=0&c=1_0'
+      var name = info.work.name
+        .split('\\').join('\\\\')
+        .split('|').join('\\|')
+        .split('-').join('\\-')
+      var url = 'https://sukebei.nyaa.si/?q=' + encodeURIComponent(info.work.id + '|' + name) + '&f=0&c=1_0'
       window.open(url)
     }
   )
@@ -386,12 +361,17 @@
   SearchByAnimeSharingButton.click(
     function () {
       var info = GetWorkInfo()
+      var name = info.work.name
+        .split('\\').join('\\\\')
+        .split('|').join('\\|')
+        .split('-').join('\\-')
+        .split('!').join('\\!')
       Submit('http://www.anime-sharing.com/forum/search.php?do=process', 'post', {
         'securitytoken': 'guest',
         'sortby': 'relevance',
         'order': 'descending',
         'do': 'process',
-        'query': info.work.name
+        'query': name
       })
     }
   )
@@ -470,14 +450,36 @@
       window.open(url)
     }
   )
+
+  LocalWorkInfoButton.click(
+    function () {
+      var id = GetWorkInfo().work.id
+      var elem = $(this)
+      var db = openDatabase('DLsiteWorkInfo', '1.0', 'DLsite plugin local storage', 1024 * 1024 * 1024)
+      db.transaction(function (tx) {
+        tx.executeSql('SELECT * FROM Storage WHERE work_sn=?', [id], function (tx, rs) {
+          if (rs.rows.length == 0) {
+            layer.tips('未发现本地副本', elem, { time: 1000 })
+          } else {
+            var paths = rs.rows[0].path
+            for (var i = 1; i < rs.rows.length; ++i) {
+              paths += `\n${rs.rows[i].path}`
+            }
+            Utility.SetTextToClipboard(paths)
+            layer.tips(`发现了${rs.rows.length}个本地副本<br>已将路径复制到剪贴板`, elem, { time: 1000 })
+          }
+          return false
+        })
+      })
+    }
+  )
   
   layer.config({
     anim: 5,
-    time: 0.5,
-    tips: [3, 'rgba(0,0,0)'],
-    path: 'include/layer'
+    time: 0,
+    tips: [3, 'rgba(0,0,0)']
   })
-
+  
   $('#topicpath').after(ToolBarA)
   $('#work_name > a').after(ToolBarB)
   ToolBarA.append(ButtonGroupA)
@@ -502,6 +504,7 @@
   ButtonGroupB.append(CopyDLsiteStringButton)
   ButtonGroupB.append(CopyInfoTableButton)
   ButtonGroupB.append(CopyBeautifiedInfoTableButton)
+  ButtonGroupB.append(LocalWorkInfoButton)
 
   $('#top_wrapper').css('margin-top', '0')
   $('#topicpath').css('display', 'inline')

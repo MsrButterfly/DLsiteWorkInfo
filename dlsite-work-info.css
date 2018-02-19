@@ -37,6 +37,14 @@
   margin-left: 10px;
 }
 
+.dwi-local-path-btn {
+  margin-top: 10px;
+  padding: 10px 50px 10px 50px;
+  height: 100px;
+  overflow: hidden;
+  direction: rtl;
+}
+
 .dwi-btn-gray {
   border-color: #b8c4d9;
   color: #8591a6;
