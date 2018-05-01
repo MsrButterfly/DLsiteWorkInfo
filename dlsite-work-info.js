@@ -226,7 +226,9 @@
       }
       var info = GetWorkInfo()
       // Calculate form.
-      var ageProvision = info.category == 'maniax' ? '同人' : info.work.ageProvision
+      var ageProvision = info.category == 'maniax' ?
+        (info.work.ageProvision == '18禁' ? '同人' : '一般') :
+        info.work.ageProvision
       var form = ''
       if (anyOf_inArray(['ムービーファイル', 'ムービー', 'ムービー(AVI)', 'ムービー(WMV)', 'ムービー(MPEG)', 'ムービー(MP4)', 'AVI', 'WMV', 'MPEG', 'MP4'], info.work.fileForms)) {
         form = 'アニメ'
