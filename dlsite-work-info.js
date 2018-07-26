@@ -236,7 +236,7 @@
         form = anyOf_inArray(['動画作品', '動画'], info.work.workForms) ? 'アニメゲーム' : 'ゲーム'
       } else if (anyOf_inArray(['アドベンチャーゲーム', 'シミュレーションゲーム', 'アドベンチャー'], info.work.workForms)) {
         form = 'ゲーム'
-      } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'HTML+画像', 'PDF', 'BMP', 'JPEG', 'PNG', '専用ビューア'], info.work.fileForms) && anyOf_inArray(['イラスト+ノベル', 'イラスト(CG)+ノベル', 'イラスト集(CG集)', 'イラスト集', 'CG+ノベル', 'CG集'], info.work.workForms)) {
+      } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'HTML+画像', 'PDF', 'BMP', 'JPEG', 'PNG', '専用ビューア'], info.work.fileForms) && anyOf_inArray(['イラスト+ノベル', 'イラスト(CG)+ノベル', 'イラスト集(CG集)', 'イラスト集', 'CG+ノベル', 'CG集', 'CG・イラスト'], info.work.workForms)) {
         form = 'CG集'
       } else if (anyOf_inArray(['オーディオ', 'オーディオ(MP3)', 'オーディオ(WAV)', 'オーディオ(FLAC)', 'MP3', 'WAV', 'FLAC'], info.work.fileForms) && anyOf_inArray(['音声作品', '音声'], info.work.workForms)) {
         form = '音声'
@@ -304,6 +304,11 @@
         if (r != null) {
           url = 'http://www.dlsite.com/ecchi-eng/work/=/product_id/' + unescape(r[0]) + '.html'
         }
+        exp = new RegExp('BJ[0-9]{6}')
+        r = text.match(exp)
+        if (r != null) {
+          url = 'http://www.dlsite.com/books/work/=/product_id/' + unescape(r[0]) + '.html'
+        }
         if (url != null) {
           window.location.href = url
         } else {
@@ -368,6 +373,7 @@
         .split('|').join('\\|')
         .split('-').join('\\-')
         .split('!').join('\\!')
+        .split('@').join('\\@')
       Submit('http://www.anime-sharing.com/forum/search.php?do=process', 'post', {
         'securitytoken': 'guest',
         'sortby': 'relevance',
@@ -459,13 +465,13 @@
       var elem = $(this)
       var db = openDatabase('DLsiteWorkInfo', '1.0', 'DLsite plugin local storage', 1024 * 1024 * 1024)
       db.transaction(function (tx) {
-        tx.executeSql('SELECT * FROM Storage WHERE work_sn=?', [id], function (tx, rs) {
+        tx.executeSql('SELECT * FROM storage WHERE WORK_SN=?', [id], function (tx, rs) {
           if (rs.rows.length == 0) {
             layer.tips('未发现本地副本', elem, { time: 1000 })
           } else {
-            var paths = rs.rows[0].path
+            var paths = rs.rows[0].PATH
             for (var i = 1; i < rs.rows.length; ++i) {
-              paths += `\n${rs.rows[i].path}`
+              paths += `\n${rs.rows[i].PATH}`
             }
             Utility.SetTextToClipboard(paths)
             layer.tips(`发现了${rs.rows.length}个本地副本<br>已将路径复制到剪贴板`, elem, { time: 1000 })
@@ -482,7 +488,7 @@
     tips: [3, 'rgba(0,0,0)']
   })
   
-  $('#topicpath').after(ToolBarA)
+  $('#top_wrapper > .topicpath').append(ToolBarA)
   $('#work_name > a').after(ToolBarB)
   ToolBarA.append(ButtonGroupA)
   ToolBarB.append(ButtonGroupB)
@@ -508,9 +514,9 @@
   ButtonGroupB.append(CopyBeautifiedInfoTableButton)
   ButtonGroupB.append(LocalWorkInfoButton)
 
-  $('#top_wrapper').css('margin-top', '0')
-  $('#topicpath').css('display', 'inline')
-  $('#top_wrapper > div.base_title_br.clearfix').css('margin-top', '5px')
+  // $('#top_wrapper').css('margin-top', '0')
+  // $('#topicpath').css('display', 'inline')
+  // $('#top_wrapper > div.base_title_br.clearfix').css('margin-top', '5px')
   $('#work_name > a').css('display', 'inline')
 
 }
