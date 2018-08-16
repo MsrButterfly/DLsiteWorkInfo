@@ -1,6 +1,6 @@
 var IwaraHelper = function () {
 
-  var BaseUrl = 'http://ecchi.iwara.tv'
+  var BaseUrl = 'https://ecchi.iwara.tv'
   var VideoUri = '/videos'
 
   var ToolBar = $('div.node-buttons')

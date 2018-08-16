@@ -61,7 +61,7 @@
     },
     {
       "matches": [
-        "http://ecchi.iwara.tv/videos/*"
+        "https://ecchi.iwara.tv/videos/*"
       ],
       "css": [
         "includes/layer/theme/default/layer.css",

@@ -234,7 +234,7 @@
         form = 'アニメ'
       } else if (anyOf_inArray(['アプリケーション', 'Flash', 'HTML(+動画)', 'HTML(+Flash)', 'HTML(Flash)', 'HTML(動画)'], info.work.fileForms)) {
         form = anyOf_inArray(['動画作品', '動画'], info.work.workForms) ? 'アニメゲーム' : 'ゲーム'
-      } else if (anyOf_inArray(['アドベンチャーゲーム', 'シミュレーションゲーム', 'アドベンチャー'], info.work.workForms)) {
+      } else if (anyOf_inArray(['アドベンチャーゲーム', 'シミュレーションゲーム', 'アドベンチャー', 'ロールプレイング', 'パズル'], info.work.workForms)) {
         form = 'ゲーム'
       } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'HTML+画像', 'PDF', 'BMP', 'JPEG', 'PNG', '専用ビューア'], info.work.fileForms) && anyOf_inArray(['イラスト+ノベル', 'イラスト(CG)+ノベル', 'イラスト集(CG集)', 'イラスト集', 'CG+ノベル', 'CG集', 'CG・イラスト'], info.work.workForms)) {
         form = 'CG集'
@@ -374,6 +374,7 @@
         .split('-').join('\\-')
         .split('!').join('\\!')
         .split('@').join('\\@')
+        .split('+').join('\\+')
       Submit('http://www.anime-sharing.com/forum/search.php?do=process', 'post', {
         'securitytoken': 'guest',
         'sortby': 'relevance',
