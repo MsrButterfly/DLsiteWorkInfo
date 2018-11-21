@@ -19,12 +19,11 @@
   var SearchBySagaozButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">SAGAO.Z</button>')
   var CopyWorkTitleButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品标题</button>')
   var CopyWorkIdButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品编号</button>')
+  var MakerNameButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">团体名</button > ')
   var CopyDLsiteStringButton = $('<button class="dwi-btn dwi-btn-brown dwi-next-item">用于整理的字符串</button>')
   var CopyInfoTableButton = $('<button class="dwi-btn dwi-btn-green dwi-next-item">压缩的作品信息</button>')
   var CopyBeautifiedInfoTableButton = $('<button class="dwi-btn dwi-btn-purple dwi-next-item">格式化的作品信息</button>')
   var LocalWorkInfoButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">本地副本</button>')
-  var SearchField = $('<input id="dwi-search-field" type="search" placeholder="输入包含ID的字符串跳转到作品" class="dwi-next-item">')
-  var SearchWithClipboardContentButton = $('<button id="dwi-search-button" class="dwi-btn dwi-btn-gray dwi-next-item">剪贴板</button>')
 
   var Submit = function (url, method, dict) {
     var form = $(`<form action="${url}" method="${method}" target="_blank"></form>`)
@@ -51,9 +50,9 @@
   }
 
   var GetCategory = function () {
-    var exp = new RegExp('http://www\.dlsite\.com/([a-zA-Z]*)/(work|announce)/=.*')
+    var exp = new RegExp('http(s?)://www\.dlsite\.com/([a-zA-Z]*)/(work|announce)/=.*')
     var r = window.location.href.match(exp)
-    return unescape(r[1])
+    return unescape(r[2])
   }
 
   var GetMakerId = function () {
@@ -65,14 +64,14 @@
         var title = elem.children('th')
         var value = elem.children('td')
         if ($.inArray(title.text(), ['サークル名', 'ブランド名']) != -1) {
-          var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng)/circle/profile/=/maker_id/(.*)$')
+          var exp = new RegExp('http(s?)://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng)/circle/profile/=/maker_id/(.*)$')
           var url = value.children('span.maker_name').children('a').attr('href')
           if (url == null) {
             url = $('#topicpath > a:nth-child(2) > span').text()
           }
           var r = url.match(exp)
           if (r != null) {
-            result = unescape(r[2]).split('#')[0].replace('/', '').replace('.html', '')
+            result = unescape(r[3]).split('#')[0].replace('/', '').replace('.html', '')
           }
         }
       }
@@ -81,19 +80,19 @@
   }
 
   var GetWorkId = function () {
-    var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng|home)/(work|announce)/=/product_id/(.*)$')
+    var exp = new RegExp('http(s?)://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng|home)/(work|announce)/=/product_id/(.*)$')
     var url = $('#work_name > a').attr('href')
     if (url == null) {
       var url = window.location.href
     }
     var r = url.match(exp)
-    return unescape(r[3]).split('#')[0].replace('/', '').replace('.html', '')
+    return unescape(r[4]).split('#')[0].replace('/', '').replace('.html', '')
   }
 
   var WorkIsPublished = function () {
-    var exp = new RegExp('http://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng|home)/(work|announce)/.*')
+    var exp = new RegExp('http(s?)://www\.dlsite\.com/(maniax|pro|books|nijiyome|ecchi-eng|home)/(work|announce)/.*')
     var r = window.location.href.match(exp)
-    return unescape(r[2]) == 'work'
+    return unescape(r[3]) == 'work'
   }
 
   var GetWorkInfo = function () {
@@ -213,6 +212,14 @@
     }
   )
 
+  MakerNameButton.click(
+    function () {
+      var info = GetWorkInfo();
+      Utility.SetTextToClipboard(info.maker.name)
+      layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
+    }
+  )
+
   CopyDLsiteStringButton.click(
     function () {
       var anyOf_inArray = function (arrayA, arrayB) {
@@ -234,13 +241,13 @@
         form = 'アニメ'
       } else if (anyOf_inArray(['アプリケーション', 'Flash', 'HTML(+動画)', 'HTML(+Flash)', 'HTML(Flash)', 'HTML(動画)'], info.work.fileForms)) {
         form = anyOf_inArray(['動画作品', '動画'], info.work.workForms) ? 'アニメゲーム' : 'ゲーム'
-      } else if (anyOf_inArray(['アドベンチャーゲーム', 'シミュレーションゲーム', 'アドベンチャー', 'ロールプレイング', 'パズル'], info.work.workForms)) {
+      } else if (anyOf_inArray(['アドベンチャーゲーム', 'シミュレーションゲーム', 'アドベンチャー', 'ロールプレイング', 'シューティング', 'パズル', 'タイピング'], info.work.workForms)) {
         form = 'ゲーム'
       } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'HTML+画像', 'PDF', 'BMP', 'JPEG', 'PNG', '専用ビューア'], info.work.fileForms) && anyOf_inArray(['イラスト+ノベル', 'イラスト(CG)+ノベル', 'イラスト集(CG集)', 'イラスト集', 'CG+ノベル', 'CG集', 'CG・イラスト'], info.work.workForms)) {
         form = 'CG集'
       } else if (anyOf_inArray(['オーディオ', 'オーディオ(MP3)', 'オーディオ(WAV)', 'オーディオ(FLAC)', 'MP3', 'WAV', 'FLAC'], info.work.fileForms) && anyOf_inArray(['音声作品', '音声'], info.work.workForms)) {
         form = '音声'
-      } else if (anyOf_inArray(['マンガ', 'デジタルコミック'], info.work.workForms)) {
+      } else if (anyOf_inArray(['マンガ', 'デジタルコミック', '単話'], info.work.workForms)) {
         form = 'コミック'
         if (info.work.ageProvision == '18禁') {
           ageProvision = '成年'
@@ -275,57 +282,6 @@
       var result = JSON.stringify(info, null, 2)
       Utility.SetTextToClipboard(JSON.stringify(info, null, 2))
       layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
-    }
-  )
-
-  SearchField.keypress(
-    function (event) {
-      var keycode = (event.keyCode ? event.keyCode : event.which)
-      if (keycode == '13') {
-        var text = SearchField.val()
-        var url = null
-        var exp = new RegExp('RJ[0-9]{6}')
-        var r = text.match(exp)
-        if (r != null) {
-          url = 'http://www.dlsite.com/maniax/work/=/product_id/' + unescape(r[0]) + '.html'
-        }
-        exp = new RegExp('([0-9]{3})[A-Z]RJ([0-9]{3})')
-        var r = text.match(exp)
-        if (r != null) {
-          url = 'http://www.dlsite.com/maniax/work/=/product_id/RJ' + unescape(r[1]) + unescape(r[2]) + '.html'
-        }
-        exp = new RegExp('VJ[0-9]{6}')
-        r = text.match(exp)
-        if (r != null) {
-          url = 'http://www.dlsite.com/pro/work/=/product_id/' + unescape(r[0]) + '.html'
-        }
-        exp = new RegExp('RE[0-9]{6}')
-        r = text.match(exp)
-        if (r != null) {
-          url = 'http://www.dlsite.com/ecchi-eng/work/=/product_id/' + unescape(r[0]) + '.html'
-        }
-        exp = new RegExp('BJ[0-9]{6}')
-        r = text.match(exp)
-        if (r != null) {
-          url = 'http://www.dlsite.com/books/work/=/product_id/' + unescape(r[0]) + '.html'
-        }
-        if (url != null) {
-          window.location.href = url
-        } else {
-          layer.tips('未发现作品ID', $(this), { time: 1000 })
-        }
-      }
-    }
-  )
-
-  SearchWithClipboardContentButton.click(
-    function (event) {
-      SearchField.val('')
-      SearchField.focus()
-      document.execCommand('paste')
-      var e = jQuery.Event('keypress');
-      e.which = 13;
-      SearchField.trigger(e)
     }
   )
 
@@ -506,10 +462,9 @@
   ButtonGroupA.append(SearchByBtdbButton)
   // ButtonGroupA.append(SearchBySoBaiduPanButton)
   ButtonGroupA.append(SearchBySagaozButton)
-  ButtonGroupA.append(SearchWithClipboardContentButton)
-  ButtonGroupA.append(SearchField)
   ButtonGroupB.append(CopyWorkIdButton)
   ButtonGroupB.append(CopyWorkTitleButton)
+  ButtonGroupB.append(MakerNameButton)
   ButtonGroupB.append(CopyDLsiteStringButton)
   ButtonGroupB.append(CopyInfoTableButton)
   ButtonGroupB.append(CopyBeautifiedInfoTableButton)

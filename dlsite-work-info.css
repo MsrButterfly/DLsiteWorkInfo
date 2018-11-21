@@ -99,16 +99,3 @@
   background: #a69542;
   color: #fff;
 }
-
-#dwi-search-field {
-  vertical-align: baseline;
-  float: right;
-  border: 1px solid #dadada;
-  color: #555;
-  width: 150px;
-  border-radius: 3px;
-}
-
-#dwi-search-button {
-  float: right
-}

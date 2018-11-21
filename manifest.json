@@ -12,8 +12,8 @@
   "content_scripts": [
     {
       "matches": [
-        "http://www.dlsite.com/*/work/*",
-        "http://www.dlsite.com/*/announce/*"
+        "https://www.dlsite.com/*/work/*",
+        "https://www.dlsite.com/*/announce/*"
       ],
       "css": [
         "includes/layer/theme/default/layer.css",
@@ -29,8 +29,8 @@
     },
     {
       "matches": [
-        "http://www.dlsite.com/*/mypage/wishlist",
-        "http://www.dlsite.com/*/mypage/wishlist/*"
+        "https://www.dlsite.com/*/mypage/wishlist",
+        "https://www.dlsite.com/*/mypage/wishlist/*"
       ],
       "css": [
         "includes/layer/theme/default/layer.css",
@@ -42,6 +42,22 @@
         "includes/layer/layer.js",
         "utility.js",
         "dlsite-wishlist-helper.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://www.dlsite.com/*"
+      ],
+      "css": [
+        "includes/layer/theme/default/layer.css",
+        "dlsite-work-info.css",
+        "dlsite-quick-jumper.css"
+      ],
+      "js": [
+        "includes/jquery/jquery-3.2.1.min.js",
+        "includes/layer/layer.js",
+        "dlsite-quick-jumper.js"
       ],
       "run_at": "document_end"
     },
