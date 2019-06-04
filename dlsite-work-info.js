@@ -135,10 +135,7 @@
         var value = elem.children('td')
         if (title.text() == '販売日') {
           var dateString = value.children('a').text()
-          var year = dateString.substr(0, 4)
-          var month = dateString.substr(5, 2)
-          var date = dateString.substr(8, 2)
-          result.work.saleDate = year + '-' + month + '-' + date
+          result.work.saleDate = Utility.ConvertDateFormat_0(dateString)
         } else if (title.text() == '最終更新日') {
           var dateString = value.text()
           var year = dateString.substr(0, 4)
@@ -153,13 +150,17 @@
           workFormElem.children().each(
             function () {
               var elem = $(this)
-              result.work.workForms.push(elem.children('span').text())
+              var form = elem.text()
+              result.work.workForms.push(form)
             }
           )
           var exp = new RegExp('.*</span></a>&nbsp;/&nbsp;([^<>]*)$')
           var r = workFormElem.html().match(exp)
           if (r != null) {
-            result.work.workForms.push(unescape(r[1]))
+            result.work.workForms = result.work.workForms.concat(unescape(r[1])
+              .split('/')
+              .map(s => s.trim())
+              .filter(s => s.length > 0))
           }
         } else if (title.text() == 'ファイル形式') {
           result.work.fileForms = []
@@ -237,17 +238,20 @@
         (info.work.ageProvision == '18禁' ? '同人' : '一般') :
         info.work.ageProvision
       var form = ''
-      if (anyOf_inArray(['ムービーファイル', 'ムービー', 'ムービー(AVI)', 'ムービー(WMV)', 'ムービー(MPEG)', 'ムービー(MP4)', 'AVI', 'WMV', 'MPEG', 'MP4'], info.work.fileForms)) {
+      if (anyOf_inArray(['ムービーファイル', 'ムービー', 'ムービー(AVI)', 'ムービー(WMV)', 'ムービー(MPEG)', 'ムービー(MP4)', 'AVI', 'WMV', 'MPEG', 'MP4', 'WMV形式プレイムービー'], info.work.fileForms)
+        || anyOf_inArray(['WMV形式'], info.work.workForms)) {
         form = 'アニメ'
-      } else if (anyOf_inArray(['アプリケーション', 'Flash', 'HTML(+動画)', 'HTML(+Flash)', 'HTML(Flash)', 'HTML(動画)'], info.work.fileForms)) {
+      } else if (anyOf_inArray(['アプリケーション', 'EXE同梱', 'Flash', 'HTML(+動画)', 'HTML(+Flash)', 'HTML(Flash)', 'HTML(動画)'], info.work.fileForms)) {
         form = anyOf_inArray(['動画作品', '動画'], info.work.workForms) ? 'アニメゲーム' : 'ゲーム'
-      } else if (anyOf_inArray(['アドベンチャーゲーム', 'シミュレーションゲーム', 'アドベンチャー', 'ロールプレイング', 'シューティング', 'パズル', 'タイピング'], info.work.workForms)) {
+      } else if (anyOf_inArray(['アドベンチャーゲーム', 'シミュレーションゲーム', 'アドベンチャー', 'ロールプレイング', 'シューティング', 'パズル', 'タイピング', 'クイズ', 'テーブル'], info.work.workForms)) {
         form = 'ゲーム'
-      } else if (anyOf_inArray(['画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'HTML+画像', 'PDF', 'BMP', 'JPEG', 'PNG', '専用ビューア'], info.work.fileForms) && anyOf_inArray(['イラスト+ノベル', 'イラスト(CG)+ノベル', 'イラスト集(CG集)', 'イラスト集', 'CG+ノベル', 'CG集', 'CG・イラスト'], info.work.workForms)) {
+      } else if (anyOf_inArray(['CG・イラスト', '画像ファイル', '画像(BMP)', '画像(JPEG)', '画像(PNG)', 'HTML(+Flash)', 'HTML(+画像)', 'HTML+画像', 'PDF', 'BMP', 'JPEG', 'PNG', '専用ビューア'], info.work.fileForms) && anyOf_inArray(['イラスト+ノベル', 'イラスト(CG)+ノベル', 'イラスト集(CG集)', 'イラスト集', 'CG+ノベル', 'CG集', 'CG・イラスト', ''], info.work.workForms)) {
         form = 'CG集'
       } else if (anyOf_inArray(['オーディオ', 'オーディオ(MP3)', 'オーディオ(WAV)', 'オーディオ(FLAC)', 'MP3', 'WAV', 'FLAC'], info.work.fileForms) && anyOf_inArray(['音声作品', '音声'], info.work.workForms)) {
         form = '音声'
-      } else if (anyOf_inArray(['マンガ', 'デジタルコミック', '単話'], info.work.workForms)) {
+      } else if (anyOf_inArray(['音楽'], info.work.workForms)) {
+        form = '音楽'
+      } else if (anyOf_inArray(['マンガ', 'デジタルコミック', '単話',  '単行本', '雑誌/アンソロ'], info.work.workForms)) {
         form = 'コミック'
         if (info.work.ageProvision == '18禁') {
           ageProvision = '成年'
@@ -258,11 +262,12 @@
       // Concat result.
       var result = '('
         + ageProvision + form + ') ['
-        + info.work[info.work.published ? 'saleDate' : 'lastUpdateDate'].substr(2).split('-').join('') + '] ['
+        + Utility.ConvertDateFormat_1(info.work[info.work.published ? 'saleDate' : 'lastUpdateDate']) + '] ['
         + info.work.id + '] [' + info.maker.name + '] ' + info.work.name
       result = result.toFileNameFormat()
       result = result
-        .split('(モーションコミック版)').join('（モーションコミック版）') // For サークル「survive」, will be changed to more generalized implementation in the future
+        .split('(モーションコミック版)')
+        .join('（モーションコミック版）') // For サークル「survive」, will be changed to more generalized implementation in the future
       Utility.SetTextToClipboard(result)
       layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
     }
@@ -279,7 +284,6 @@
   CopyBeautifiedInfoTableButton.click(
     function () {
       var info = GetWorkInfo()
-      var result = JSON.stringify(info, null, 2)
       Utility.SetTextToClipboard(JSON.stringify(info, null, 2))
       layer.tips('文本已被复制到剪贴板', $(this), { time: 1000 })
     }

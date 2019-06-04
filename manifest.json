@@ -106,6 +106,22 @@
         "getchu-work-info.js"
       ],
       "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://www.suruga-ya.jp/kaitori_detail/*"
+      ],
+      "css": [
+        "includes/layer/theme/default/layer.css",
+        "surugaya-work-info.css"
+      ],
+      "js": [
+        "includes/jquery/jquery-3.2.1.min.js",
+        "includes/layer/layer.js",
+        "utility.js",
+        "surugaya-work-info.js"
+      ],
+      "run_at": "document_end"
     }
   ]
 }

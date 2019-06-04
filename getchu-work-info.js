@@ -86,14 +86,16 @@ var GetchuHelper = function () {
       var keycode = (event.keyCode ? event.keyCode : event.which)
       if (keycode == '13') {
         var text = SearchField.val()
-        var url = null
-        var exp = new RegExp('\\(18禁ゲーム\\) \\[\\d{6}\\] \\[gc(\\d+)\\] \\[.+\\] .+')
-        var r = text.match(exp)
-        if (r != null) {
-          url = BaseUrl + WorkUri + '?id=' + unescape(r[1])
+        var id = null;
+        for (var s of ['gc(\\d+)', 'G(\\d+)']) {
+          var r = text.match(new RegExp(s))
+          if (r != null) {
+            id = unescape(r[1])
+            break
+          }
         }
-        if (url != null) {
-          window.location.href = url
+        if (id != null) {
+          window.location.href = BaseUrl + WorkUri + '?id=' + id
         } else {
           layer.tips('未发现作品ID', $(this), {
             time: 1000,

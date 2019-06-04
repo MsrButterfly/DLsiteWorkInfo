@@ -43,6 +43,17 @@ var Utility = function () {
     elem.remove()
   }
 
+  this.ConvertDateFormat_0 = function (dateString) {
+    var year = dateString.substr(0, 4)
+    var month = dateString.substr(5, 2)
+    var date = dateString.substr(8, 2)
+    return `${year}-${month}-${date}`
+  }
+
+  this.ConvertDateFormat_1 = function (dateString) {
+    return dateString.substr(2).split(/\D/).join('')
+  }
+
   return this
 
 }()
