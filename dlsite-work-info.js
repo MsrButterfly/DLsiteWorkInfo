@@ -19,7 +19,7 @@
   var SearchBySagaozButton = $('<button class="dwi-btn dwi-btn-gray dwi-next-item">SAGAO.Z</button>')
   var CopyWorkTitleButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品标题</button>')
   var CopyWorkIdButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">作品编号</button>')
-  var MakerNameButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">团体名</button > ')
+  var CopyMakerNameButton = $('<button class="dwi-btn dwi-btn-yellow dwi-next-item">团体名</button>')
   var CopyDLsiteStringButton = $('<button class="dwi-btn dwi-btn-brown dwi-next-item">用于整理的字符串</button>')
   var CopyInfoTableButton = $('<button class="dwi-btn dwi-btn-green dwi-next-item">压缩的作品信息</button>')
   var CopyBeautifiedInfoTableButton = $('<button class="dwi-btn dwi-btn-purple dwi-next-item">格式化的作品信息</button>')
@@ -213,7 +213,7 @@
     }
   )
 
-  MakerNameButton.click(
+  CopyMakerNameButton.click(
     function () {
       var info = GetWorkInfo();
       Utility.SetTextToClipboard(info.maker.name)
@@ -468,7 +468,7 @@
   ButtonGroupA.append(SearchBySagaozButton)
   ButtonGroupB.append(CopyWorkIdButton)
   ButtonGroupB.append(CopyWorkTitleButton)
-  ButtonGroupB.append(MakerNameButton)
+  ButtonGroupB.append(CopyMakerNameButton)
   ButtonGroupB.append(CopyDLsiteStringButton)
   ButtonGroupB.append(CopyInfoTableButton)
   ButtonGroupB.append(CopyBeautifiedInfoTableButton)
